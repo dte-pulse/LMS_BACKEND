@@ -1,0 +1,49 @@
+# ============================================================
+#  application.properties.example
+#  Copy this file to application.properties and fill in your
+#  actual values. NEVER commit application.properties to git.
+#
+#  For Render deployment, these values come from Environment Variables
+#  For local development, create application.properties with actual values
+# ============================================================
+
+spring.application.name=Pulse
+
+# --- Database (MySQL / Aiven) ---
+# Format: jdbc:mysql://<HOST>:<PORT>/<DB_NAME>
+spring.datasource.url=${DB_URL:jdbc:mysql://localhost:3306/feild}
+spring.datasource.username=${DB_USERNAME:root}
+spring.datasource.password=${DB_PASSWORD:}
+
+# --- JPA / Hibernate ---
+spring.jpa.show-sql=${JPA_SHOW_SQL:false}
+spring.jpa.hibernate.ddl-auto=${JPA_DDL_AUTO:update}
+
+# --- Server ---
+# On Render, the PORT env var is injected automatically (usually 10000)
+# Locally, it defaults to 8081
+server.port=${PORT:8081}
+server.servlet.session.cookie.same-site=strict
+
+# --- File Upload Limits ---
+spring.servlet.multipart.max-file-size=1200MB
+spring.servlet.multipart.max-request-size=1200MB
+
+# --- JWT Configuration ---
+# Generate a strong secret: openssl rand -base64 32
+jwt.secret=${JWT_SECRET:changeThisToASecretKeyForLocalDevOnly}
+jwt.expiration=${JWT_EXPIRATION:86400000}
+jwt.cookieName=jwtToken
+
+# --- Google Gemini AI ---
+# Get your API key from: https://aistudio.google.com/app/apikey
+gemini.api.key=${GEMINI_API_KEY:}
+
+# --- AWS S3 Configuration ---
+cloud.aws.region.static=${AWS_REGION:us-east-1}
+cloud.aws.credentials.access-key=${AWS_ACCESS_KEY:}
+cloud.aws.credentials.secret-key=${AWS_SECRET_KEY:}
+cloud.aws.s3.bucket.name=${S3_BUCKET_NAME:hrappmodule}
+
+# --- Logging ---
+logging.level.org.springframework.security=${LOG_LEVEL:INFO}

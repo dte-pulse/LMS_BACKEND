@@ -1,0 +1,35 @@
+package com.LMS.Pulse.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "jotform_pages")
+public class JotformPage {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Integer page;
+
+    private Integer totalElements;
+
+    @ManyToOne
+    @JoinColumn(name = "jotform_id", nullable = false)
+    @JsonBackReference
+    private Jotform jotform;
+
+    @OneToMany(mappedBy = "page", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<JotformElement> elements = new ArrayList<>();
+}
