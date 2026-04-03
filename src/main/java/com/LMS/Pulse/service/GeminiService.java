@@ -14,7 +14,7 @@ public class GeminiService {
     public String askGemini(String prompt) {
         try {
             GenerateContentResponse response = client.models.generateContent(
-                    "gemini-2.0-flash",
+                    "gemini-2.5-flash",
                     prompt,
                     null);
             return response.text();
@@ -31,8 +31,7 @@ public class GeminiService {
                         "Question: '%s' " +
                         "Answer: '%s' " +
                         "Return only the integer score, nothing else.",
-                question, answer
-        );
+                question, answer);
         try {
             String scoreText = askGemini(prompt).trim();
             return Integer.parseInt(scoreText.replaceAll("[^0-9]", ""));
