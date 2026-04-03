@@ -13,7 +13,7 @@ public class GeminiController {
     private final GeminiService geminiService;
 
     @PostMapping("/ask")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public String askGeminiApi(@RequestBody String prompt) {
         return geminiService.askGemini(prompt);
     }
