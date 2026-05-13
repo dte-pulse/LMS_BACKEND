@@ -41,16 +41,15 @@ public class SubmissionService {
         Assignment assignment = assignmentRepository.findByAssignmentIdentifier(assignmentIdentifier)
                 .orElseThrow(() -> new EntityNotFoundException("No assignment found with identifier: " + assignmentIdentifier));
 
-        // 1. Upload the identity photo to S3
+        // 1. Upload the identity photo to S3 — store only the key, never a pre-signed URL
         String photoKey = s3Service.uploadFile(identityPhoto);
-        String photoUrl = s3Service.generatePresignedUrl(photoKey);
 
         // 2. Create the main UserSubmissions record
         UserSubmissions submission = new UserSubmissions();
         submission.setUsername(dto.getUsername());
         submission.setUserId(user.getId().toString());
         submission.setAssignment(assignment);
-        submission.setUserPhotoUrl(photoUrl);
+        submission.setUserPhotoUrl(photoKey); // store key; generate URL on demand
         submission.setAnswers(new ArrayList<>());
 
         UserSubmissions savedSubmission = userSubmissionsRepository.save(submission);
@@ -60,9 +59,8 @@ public class SubmissionService {
             AnswerSubmissionDto answerDto = dto.getAnswers().get(i);
             MultipartFile videoFile = videoFiles.get(i);
 
-            // Upload video to S3
+            // Upload video to S3 — store only the key, never a pre-signed URL
             String videoKey = s3Service.uploadFile(videoFile);
-            String videoUrl = s3Service.generatePresignedUrl(videoKey);
 
             // Evaluate the transcript with Gemini
             int score = geminiService.getScoreForAnswer(answerDto.getQuestionText(), answerDto.getTranscript());
@@ -72,7 +70,7 @@ public class SubmissionService {
             answer.setUserSubmission(savedSubmission);
             answer.setQuestion(answerDto.getQuestionText());
             answer.setUserAnswer(answerDto.getTranscript());
-            answer.setContentLink(videoUrl);
+            answer.setContentLink(videoKey); // store key; generate URL on demand
             answer.setGptScore(score);
             answer.setFinalScore(score);
 

@@ -48,4 +48,18 @@ public class ResultController {
         resultService.updateFinalScore(answerId, updateScoreDto.getFinalScore());
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * Returns a fresh pre-signed S3 URL for the video of a specific answer.
+     * Called on-demand when the admin clicks "View Video" — the URL is always valid.
+     */
+    @GetMapping("/video/{answerId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getFreshVideoUrl(@PathVariable Long answerId) {
+        String url = resultService.getFreshVideoUrl(answerId);
+        if (url == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(url);
+    }
 }
